@@ -49,7 +49,7 @@ function! s:softwrap(softwrap_unwrap)
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
-    \    maxheight: float2nr(ceil(len(getline(line('.')))*1.0/available_screen)),
+    \    maxheight: float2nr(ceil(len(getline(line('.')))*1.0/(available_screen - (&showbreak == "" ? 0 : 1)))),
     \    maxwidth: available_screen,
     \    scrollbar: 0
     \ })
