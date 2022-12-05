@@ -13,9 +13,20 @@ function! s:softwrap(softwrap_unwrap)
     return
   endif
   let winfo = getwininfo(win_getid())[0]
-  let fst_vis_scr_col_in_win = winfo.wincol + winfo.textoff
+  if v:versionlong >= 8023627
+    " textoff is available only from
+    " https://github.com/Shougo/neovim/commit/886f97e92aa14adef770b90cdbf650dc159884ef
+    let textoff = winfo.textoff
+  else
+    " otherwise we compute it according to a version of
+    " https://stackoverflow.com/a/26318602/5825294 improved based on the
+    " comments therein
+    let textoff = ((&number||&relativenumber) ? &numberwidth : 0) + &foldcolumn + (empty(sign_getplaced()) ? 0 : 2)
+  endif
+  let fst_vis_scr_col_in_win = winfo.wincol + textoff
   let fst_scr_col_in_win = screencol() - virtcol('.') + 1
-  let textwidth = winfo.width - winfo.textoff
+
+  let textwidth = winfo.width - textoff
   if fst_vis_scr_col_in_win == fst_scr_col_in_win && virtcol('$') - 1 <= textwidth
     return
   endif
