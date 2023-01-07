@@ -6,7 +6,10 @@ if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
 endif
 
-hi default SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+if hlget('SoftWrapHighlightGroup')->empty()
+  highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+  autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+endif
 
 if v:versionlong >= 8023627
   " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
