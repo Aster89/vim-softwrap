@@ -6,7 +6,7 @@ if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
 endif
 
-au ColorScheme * hi SoftWrapHighlighGroup ctermbg=NONE ctermfg=NONE
+hi default SoftWrapHighlighGroup ctermbg=NONE ctermfg=NONE cterm=bold
 
 if v:versionlong >= 8023627
   " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
