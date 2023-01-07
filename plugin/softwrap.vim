@@ -8,22 +8,25 @@ endif
 
 au ColorScheme * hi SoftWrapHighlighGroup ctermbg=NONE ctermfg=NONE
 
+if v:versionlong >= 8023627
+  " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
+  let s:Textoff = {winfo -> winfo.textoff}
+else
+  " otherwise we compute it according to a version of
+  " https://stackoverflow.com/a/26318602/5825294 improved based on the
+  " comments therein
+  let s:Textoff = {winfo
+        \ -> max([&numberwidth, (&number ? len(line('$')) + 1 : (&relativenumber ? winfo.height + 1 : 0))])
+        \ + &foldcolumn
+        \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
+endif
+
 function! s:softwrap(softwrap_unwrap)
   if &wrap
     return
   endif
   let winfo = getwininfo(win_getid())[0]
-  if v:versionlong >= 8023627
-    " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
-    let textoff = winfo.textoff
-  else
-    " otherwise we compute it according to a version of
-    " https://stackoverflow.com/a/26318602/5825294 improved based on the
-    " comments therein
-    let textoff = max([&numberwidth, (&number ? len(line('$')) + 1 : (&relativenumber ? winfo.height + 1 : 0))])
-          \ + &foldcolumn
-          \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)
-  endif
+  let textoff = s:Textoff(winfo)
   let fst_vis_scr_col_in_win = winfo.wincol + textoff
   let fst_scr_col_in_win = screencol() - virtcol('.') + 1
 
