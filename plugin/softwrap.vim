@@ -6,7 +6,7 @@ if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
 endif
 
-hi default SoftWrapHighlighGroup ctermbg=NONE ctermfg=NONE cterm=bold
+hi default SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
 
 if v:versionlong >= 8023627
   " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
@@ -47,7 +47,7 @@ function! s:softwrap(softwrap_unwrap)
     \      line: 'cursor',
     \      col: popup_fst_col,
     \      moved: 'any',
-    \      highlight: 'SoftWrapHighlighGroup'
+    \      highlight: 'SoftWrapHighlightGroup'
     \   }
     \ ),
     \ #{
