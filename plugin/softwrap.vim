@@ -24,7 +24,7 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
-function! s:softwrap(softwrap_unwrap)
+function! s:showSoftwrap(softwrap_unwrap)
   if &wrap
     return
   endif
@@ -43,8 +43,7 @@ function! s:softwrap(softwrap_unwrap)
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
-  call popup_setoptions(
-    \ popup_create(
+  let pum = popup_create(
     \   bufnr(),
     \   #{
     \      line: 'cursor',
@@ -52,7 +51,9 @@ function! s:softwrap(softwrap_unwrap)
     \      moved: 'any',
     \      highlight: 'SoftWrapHighlightGroup'
     \   }
-    \ ),
+    \ )
+  call popup_setoptions(
+    \ pum,
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
@@ -60,9 +61,27 @@ function! s:softwrap(softwrap_unwrap)
     \    maxwidth: available_screen,
     \    scrollbar: 0
     \ })
+
+  function! ClosePUM(p)
+    call popup_close(a:p)
+    nunmap <esc><esc>
+  endfunction
+
+  exe "nnoremap <silent> <esc><esc> :call ClosePUM(" . pum . ")<cr>"
+
+  augroup ShowSoftwrapOnCursorHold
+    autocmd!
+  augroup END
 endfunction
 
-augroup SoftWrap
+augroup OnCursorMovedEnableSofwrapOnCursorHold
   autocmd!
-  autocmd CursorHold * call <SID>softwrap(g:softwrap_unwrap)
+  autocmd CursorMoved * call <sid>enableSoftwrapAutocmdOnCursorHold()
 augroup END
+
+function! s:enableSoftwrapAutocmdOnCursorHold()
+  augroup ShowSoftwrapOnCursorHold
+    autocmd!
+    autocmd CursorHold * call <SID>showSoftwrap(g:softwrap_unwrap)
+  augroup END
+endfunction
