@@ -6,20 +6,7 @@ if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
 endif
 
-function! s:IsSoftWrapHighlightGroupSet()
-  if v:versionlong >= 8023917
-    return !hlget('SoftWrapHighlightGroup')->empty()
-  else
-    try
-      silent highlight SoftWrapHighlightGroup
-      return v:true
-    catch
-      return v:false
-    endtry
-  endif
-endfunction
-
-if !s:IsSoftWrapHighlightGroupSet()
+if !hlexists('SoftWrapHighlightGroup')
   highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
   autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
 endif
