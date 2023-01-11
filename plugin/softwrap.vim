@@ -24,6 +24,18 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
+augroup OnCursorMovedEnableSofwrapOnCursorHold
+  autocmd!
+  autocmd CursorMoved * call <sid>enableSoftwrapAutocmdOnCursorHold()
+augroup END
+
+function! s:enableSoftwrapAutocmdOnCursorHold()
+  augroup ShowSoftwrapOnCursorHold
+    autocmd!
+    autocmd CursorHold * call <SID>showSoftwrap(g:softwrap_unwrap)
+  augroup END
+endfunction
+
 function! s:showSoftwrap(softwrap_unwrap)
   if &wrap
     return
@@ -66,18 +78,6 @@ function! s:showSoftwrap(softwrap_unwrap)
 
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-  augroup END
-endfunction
-
-augroup OnCursorMovedEnableSofwrapOnCursorHold
-  autocmd!
-  autocmd CursorMoved * call <sid>enableSoftwrapAutocmdOnCursorHold()
-augroup END
-
-function! s:enableSoftwrapAutocmdOnCursorHold()
-  augroup ShowSoftwrapOnCursorHold
-    autocmd!
-    autocmd CursorHold * call <SID>showSoftwrap(g:softwrap_unwrap)
   augroup END
 endfunction
 
