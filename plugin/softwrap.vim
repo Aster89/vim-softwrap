@@ -62,12 +62,7 @@ function! s:showSoftwrap(softwrap_unwrap)
     \    scrollbar: 0
     \ })
 
-  function! ClosePUM(p)
-    call popup_close(a:p)
-    nunmap <esc><esc>
-  endfunction
-
-  exe "nnoremap <silent> <esc><esc> :call ClosePUM(" . pum . ")<cr>"
+  exe "nnoremap <silent> <esc><esc> :call <SID>closePUM(" . pum . ")<cr>"
 
   augroup ShowSoftwrapOnCursorHold
     autocmd!
@@ -84,4 +79,9 @@ function! s:enableSoftwrapAutocmdOnCursorHold()
     autocmd!
     autocmd CursorHold * call <SID>showSoftwrap(g:softwrap_unwrap)
   augroup END
+endfunction
+
+function! s:closePUM(pum)
+  call popup_close(a:pum)
+  nunmap <esc><esc>
 endfunction
