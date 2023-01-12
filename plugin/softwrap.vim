@@ -6,6 +6,10 @@ if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
 endif
 
+if !exists('g:softwrap_patterns')
+  let g:softwrap_patterns = []
+endif
+
 if !hlexists('SoftWrapHighlightGroup')
   highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
   autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
@@ -26,13 +30,17 @@ endif
 
 augroup OnCursorMovedEnableSofwrapOnCursorHold
   autocmd!
-  autocmd CursorMoved * call <sid>enableSoftwrapAutocmdOnCursorHold()
+  for f in g:softwrap_patterns
+    exec "autocmd CursorMoved " . f . " call <sid>enableSoftwrapAutocmdOnCursorHold()"
+  endfor
 augroup END
 
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    autocmd CursorHold * call <SID>showSoftwrap(g:softwrap_unwrap)
+    for f in g:softwrap_patterns
+      exec "autocmd CursorHold " . f . " call <SID>showSoftwrap(g:softwrap_unwrap)"
+    endfor
   augroup END
 endfunction
 
