@@ -1,0 +1,86 @@
+*softwrap.txt*	For Vim version 8.2	Last change: 2023 January 12
+*SoftWrap*
+
+
+==============================================================================
+CONTENTS                                                      *SoftWrapContents*
+
+    1. Introduction ......................... |SoftWrapIntro|
+      1.1 Enable SoftWrap ............. |g:softwrap_patterns|
+    2. Configuration ....................... |SoftWrapConfig|
+      2.1 Dismiss mapping .... |g:softwrap_close_pum_mapping|
+      2.2 Style .................... |SoftWrapHighlightGroup|
+      2.3 Unwrapping .................... |g:softwrap_unwrap|
+
+
+==============================================================================
+1. Intro                                                         *SoftWrapIntro*
+
+Plugin for soft-wrapping current line when |wrap| is active.
+
+Simply add the following to your |vimrc| to see what happens when the
+cursor is on a line that finishes beyond the right border of the window (or
+begins before the left border).
+>
+  let g:softwrap_patterns = ['*']
+<
+(The plugin is disabled by default; to enable it, define |g:softwrap_patterns|.)
+
+------------------------------------------------------------------------------
+1.1 Enable SoftWrap                                        *g:softwrap_patterns*
+
+To enable SoftWrap, specify which files you want to use it on, by defining the
+variable |g:softwrap_patterns|, which will be used as the |autocmd-pattern|
+for the |autocmd| that this plugin uses internally. For instance, the
+following will make it active only on the 3 buffers `vimspector.Variables`,
+`vimspector.StackTrace`, and `vimspector.Watches`:
+>
+  let g:softwrap_patterns = 'vimspector.{Variables,StackTrace,Watches}'
+<
+Alternatively, you could define |g:softwrap_patterns| as a list of strings; in
+this case, the strings are joined into a comma separated string before being
+fed to the |autocmd|.
+
+Default: `[]` (plugin disabled)
+
+
+==============================================================================
+2. Configuration                                                *SoftWrapConfig*
+
+
+------------------------------------------------------------------------------
+2.1 *g:softwrap_close_pum_mapping*
+
+Normal mode key combination to dismiss the popup.
+
+Default: '<Esc><Esc>'
+
+
+------------------------------------------------------------------------------
+2.2 *SoftWrapHighlightGroup*
+
+Highlight group used to style the popup.
+
+If you don't like the default, you can customize the style by defining the
+following in your |vimrc| before any |colorscheme| command.
+>
+  autocmd ColorScheme * highlight SoftWrapHighlighGroup ctermbg=red
+<
+(Note that you can't customize |ctermfg|, as the popup uses the syntax
+highlighting of the current line.)
+
+Default:
+>
+  autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+<
+
+------------------------------------------------------------------------------
+2.3 *g:softwrap_unwrap*
+
+Setting |g:softwrap_unwrap| to |v:true| the popoup will unwrap the line over
+adjacent windows (but still wrap at screen boundaries, clearly).
+
+Default: |v:false|
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
