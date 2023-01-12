@@ -4,6 +4,9 @@ endif
 
 if !exists('g:softwrap_unwrap')
   let g:softwrap_unwrap = v:false
+elseif type(g:softwrap_unwrap) != 6
+  echomsg 'Wrong type for g:softwrap_unwrap'
+  finish
 endif
 
 if !exists('g:softwrap_patterns')
