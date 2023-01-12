@@ -53,7 +53,7 @@ augroup END
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    exec 'autocmd CursorHold ' . g:softwrap_patterns . ' call <SID>showSoftwrap(g:softwrap_unwrap)'
+    exec 'autocmd CursorHold ' . g:softwrap_patterns . ' ++once call <SID>showSoftwrap(g:softwrap_unwrap)'
   augroup END
 endfunction
 
@@ -97,9 +97,6 @@ function! s:showSoftwrap(softwrap_unwrap)
 
   exe 'nnoremap <silent> ' . g:softwrap_close_pum_mapping . ' :call <SID>closePUM(' . pum . ')<cr>'
 
-  augroup ShowSoftwrapOnCursorHold
-    autocmd!
-  augroup END
 endfunction
 
 function! s:closePUM(pum)
