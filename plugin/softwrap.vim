@@ -2,25 +2,27 @@ if &compatible
   finish
 endif
 
-if !exists('g:softwrap_unwrap')
-  let g:softwrap_unwrap = v:false
-elseif type(g:softwrap_unwrap) != 6
+let g:softwrap_unwrap = get(g:, 'softwrap_unwrap', v:false)
+let g:softwrap_patterns = get(g:, 'softwrap_patterns', '*')
+let g:softwrap_close_pum_mapping = get(g:, 'softwrap_close_pum_mapping', '<esc><esc>')
+
+if type(g:softwrap_unwrap) != 6
   echomsg 'Wrong type for g:softwrap_unwrap'
   finish
 endif
 
-if !exists('g:softwrap_patterns')
-  let g:softwrap_patterns = ''
-elseif type(g:softwrap_patterns) == 3
-  let g:softwrap_patterns = join(g:softwrap_patterns, ',')
+if type(g:softwrap_patterns) == 3
+  if !empty(g:softwrap_patterns)
+    let g:softwrap_patterns = join(g:softwrap_patterns, ',')
+  else
+    let g:softwrap_patterns = ''
+  endif
 elseif type(g:softwrap_patterns) != 1
   echomsg 'Wrong type for g:softwrap_patterns.'
   finish
 endif
 
-if !exists('g:softwrap_close_pum_mapping')
-  let g:softwrap_close_pum_mapping = '<esc><esc>'
-elseif type(g:softwrap_close_pum_mapping) != 1
+if type(g:softwrap_close_pum_mapping) != 1
   echomsg 'Wrong type for g:softwrap_close_pum_mapping.'
   finish
 endif
@@ -45,7 +47,7 @@ endif
 
 augroup OnCursorMovedEnableSofwrapOnCursorHold
   autocmd!
-  exec 'autocmd CursorMoved ' . g:softwrap_patterns . ' call <sid>enableSoftwrapAutocmdOnCursorHold()'
+  exec 'autocmd CursorMoved ' . g:softwrap_patterns . ' call <SID>enableSoftwrapAutocmdOnCursorHold()'
 augroup END
 
 function! s:enableSoftwrapAutocmdOnCursorHold()
