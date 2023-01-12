@@ -3,7 +3,7 @@ SoftWrapConfig	softwrap.txt	/*SoftWrapConfig*
 SoftWrapContents	softwrap.txt	/*SoftWrapContents*
 SoftWrapHighlightGroup	softwrap.txt	/*SoftWrapHighlightGroup*
 SoftWrapIntro	softwrap.txt	/*SoftWrapIntro*
+g:softwrap_buf_patterns	softwrap.txt	/*g:softwrap_buf_patterns*
 g:softwrap_close_pum_mapping	softwrap.txt	/*g:softwrap_close_pum_mapping*
-g:softwrap_patterns	softwrap.txt	/*g:softwrap_patterns*
-g:softwrap_unwrap	softwrap.txt	/*g:softwrap_unwrap*
+g:softwrap_pum_unwrap	softwrap.txt	/*g:softwrap_pum_unwrap*
 softwrap.txt	softwrap.txt	/*softwrap.txt*

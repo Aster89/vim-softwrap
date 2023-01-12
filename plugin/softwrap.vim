@@ -1,24 +1,45 @@
+" SoftWrap - Plugin for soft-wrapping current line in nowrap buffers
+" Copyright (c) 2022 Enrico Maria De Angelis
+"
+" Permission is hereby granted, free of charge, to any person obtaining a copy
+" of this software and associated documentation files (the "Software"), to deal
+" in the Software without restriction, including without limitation the rights
+" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+" copies of the Software, and to permit persons to whom the Software is
+" furnished to do so, subject to the following conditions:
+"
+" The above copyright notice and this permission notice shall be included in all
+" copies or substantial portions of the Software.
+"
+" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+" SOFTWARE.
+
 if &compatible
   finish
 endif
 
-let g:softwrap_unwrap = get(g:, 'softwrap_unwrap', v:false)
-let g:softwrap_patterns = get(g:, 'softwrap_patterns', '*')
+let g:softwrap_pum_unwrap = get(g:, 'softwrap_unwrap', v:false)
+let g:softwrap_buf_patterns = get(g:, 'softwrap_buf_patterns', '*')
 let g:softwrap_close_pum_mapping = get(g:, 'softwrap_close_pum_mapping', '<esc><esc>')
 
-if type(g:softwrap_unwrap) != 6
-  echomsg 'Wrong type for g:softwrap_unwrap'
+if type(g:softwrap_pum_unwrap) != 6
+  echomsg 'Wrong type for g:softwrap_pum_unwrap'
   finish
 endif
 
-if type(g:softwrap_patterns) == 3
-  if !empty(g:softwrap_patterns)
-    let g:softwrap_patterns = join(g:softwrap_patterns, ',')
+if type(g:softwrap_buf_patterns) == 3
+  if !empty(g:softwrap_buf_patterns)
+    let g:softwrap_buf_patterns = join(g:softwrap_buf_patterns, ',')
   else
-    let g:softwrap_patterns = ''
+    let g:softwrap_buf_patterns = ''
   endif
-elseif type(g:softwrap_patterns) != 1
-  echomsg 'Wrong type for g:softwrap_patterns.'
+elseif type(g:softwrap_buf_patterns) != 1
+  echomsg 'Wrong type for g:softwrap_buf_patterns.'
   finish
 endif
 
@@ -47,13 +68,13 @@ endif
 
 augroup OnCursorMovedEnableSofwrapOnCursorHold
   autocmd!
-  exec 'autocmd CursorMoved ' . g:softwrap_patterns . ' call <SID>enableSoftwrapAutocmdOnCursorHold()'
+  exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns . ' call <SID>enableSoftwrapAutocmdOnCursorHold()'
 augroup END
 
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    exec 'autocmd CursorHold ' . g:softwrap_patterns . ' ++once call <SID>showSoftwrap(g:softwrap_unwrap)'
+    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns . ' ++once call <SID>showSoftwrap(g:softwrap_pum_unwrap)'
   augroup END
 endfunction
 

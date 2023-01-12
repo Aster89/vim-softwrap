@@ -5,12 +5,12 @@
 ==============================================================================
 CONTENTS                                                      *SoftWrapContents*
 
-    1. Introduction ......................... |SoftWrapIntro|
-    2. Configuration ....................... |SoftWrapConfig|
-      2.1 Selective activation ........ |g:softwrap_patterns|
-      2.2 Dismiss mapping .... |g:softwrap_close_pum_mapping|
-      2.3 Styling .................. |SoftWrapHighlightGroup|
-      2.4 Unwrapping .................... |g:softwrap_unwrap|
+    1. Introduction .............................. |SoftWrapIntro|
+    2. Configuration ............................ |SoftWrapConfig|
+      2.1 Selective activation ......... |g:softwrap_buf_patterns|
+      2.2 Dismiss mapping ......... |g:softwrap_close_pum_mapping|
+      2.3 Styling ....................... |SoftWrapHighlightGroup|
+      2.4 Unwrapping ..................... |g:softwrap_pum_unwrap|
 
 
 ==============================================================================
@@ -27,25 +27,26 @@ begins before the left border).
 2. Configuration                                                *SoftWrapConfig*
 
 ------------------------------------------------------------------------------
-2.1 Selective activation                                   *g:softwrap_patterns*
+2.1 Selective activation                               *g:softwrap_buf_patterns*
 
 By default |SoftWrap| is active for every buffer, so the soft-wrapping will
 occur in any |window| where the cursor happens to be.
 
 To limit the action of the plugin only to those |buffers| that match a given
-pattern, the variable |g:softwrap_patterns| can be defined, which will be used
-as an |autocmd-pattern| (for the |autocmd| that this plugin uses internally).
-For instance, the following will make it active only on the 3 |buffers|
-`vimspector.Variables`, `vimspector.StackTrace`, and `vimspector.Watches`:
+pattern, the variable |g:softwrap_buf_patterns| can be defined, which will be
+used as an |autocmd-pattern| (for the |autocmd| that this plugin uses
+internally).  For instance, the following will make it active only on the 3
+|buffers| `vimspector.Variables`, `vimspector.StackTrace`, and
+`vimspector.Watches`:
 >
-  let g:softwrap_patterns = 'vimspector.{Variables,StackTrace,Watches}'
+  let g:softwrap_buf_patterns = 'vimspector.{Variables,StackTrace,Watches}'
 <
-Alternatively, you could define |g:softwrap_patterns| as a list of strings; in
-this case, the strings are joined into a comma separated string before being
-fed to the |autocmd|. For instance, to activate the plugin only for HTML files
-and text files, you could define the setting like this:
+Alternatively, you could define |g:softwrap_buf_patterns| as a list of
+strings; in this case, the strings are joined into a comma separated string
+before being fed to the |autocmd|. For instance, to activate the plugin only
+for HTML files and text files, you could define the setting like this:
 >
-  let g:softwrap_patterns = ['*.html', '*.txt']
+  let g:softwrap_buf_patterns = ['*.html', '*.txt']
 <
 
 Default: `'*'` (plugin active in every buffer)
@@ -74,13 +75,14 @@ highlighting of the current line.)
 
 Default:
 >
-  autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+  autocmd ColorScheme
+    \ * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
 <
 
 ------------------------------------------------------------------------------
-2.4 Unwrapping                                               *g:softwrap_unwrap*
+2.4 Unwrapping                                           *g:softwrap_pum_unwrap*
 
-Setting |g:softwrap_unwrap| to |v:true| the |popup| will |unwrap| the line over
+Setting |g:softwrap_pum_unwrap| to |v:true| the |popup| will |unwrap| the line over
 adjacent |windows| (but still |wrap| at screen boundaries, clearly).
 
 Default: |v:false|
