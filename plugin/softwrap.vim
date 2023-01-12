@@ -18,6 +18,13 @@ elseif type(g:softwrap_patterns) != 1
   finish
 endif
 
+if !exists('g:softwrap_close_pum_mapping')
+  let g:softwrap_close_pum_mapping = '<esc><esc>'
+elseif type(g:softwrap_close_pum_mapping) != 1
+  echomsg 'Wrong type for g:softwrap_close_pum_mapping.'
+  finish
+endif
+
 if !hlexists('SoftWrapHighlightGroup')
   highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
   autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
@@ -81,12 +88,12 @@ function! s:showSoftwrap(softwrap_unwrap)
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
-    \    maxheight: float2nr(ceil(len(getline(line('.')))*1.0/(available_screen - (&showbreak == "" ? 0 : 1)))),
+    \    maxheight: float2nr(ceil(len(getline(line('.')))*1.0/(available_screen - (&showbreak == '' ? 0 : 1)))),
     \    maxwidth: available_screen,
     \    scrollbar: 0
     \ })
 
-  exe "nnoremap <silent> <esc><esc> :call <SID>closePUM(" . pum . ")<cr>"
+  exe 'nnoremap <silent> ' . g:softwrap_close_pum_mapping . ' :call <SID>closePUM(' . pum . ')<cr>'
 
   augroup ShowSoftwrapOnCursorHold
     autocmd!
@@ -95,5 +102,5 @@ endfunction
 
 function! s:closePUM(pum)
   call popup_close(a:pum)
-  nunmap <esc><esc>
+  exe 'nunmap ' . g:softwrap_close_pum_mapping
 endfunction
