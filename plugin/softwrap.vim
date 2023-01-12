@@ -10,7 +10,12 @@ elseif type(g:softwrap_unwrap) != 6
 endif
 
 if !exists('g:softwrap_patterns')
-  let g:softwrap_patterns = []
+  let g:softwrap_patterns = ''
+elseif type(g:softwrap_patterns) == 3
+  let g:softwrap_patterns = join(g:softwrap_patterns, ',')
+elseif type(g:softwrap_patterns) != 1
+  echomsg 'Wrong type for g:softwrap_patterns.'
+  finish
 endif
 
 if !hlexists('SoftWrapHighlightGroup')
@@ -33,17 +38,13 @@ endif
 
 augroup OnCursorMovedEnableSofwrapOnCursorHold
   autocmd!
-  for f in g:softwrap_patterns
-    exec "autocmd CursorMoved " . f . " call <sid>enableSoftwrapAutocmdOnCursorHold()"
-  endfor
+  exec 'autocmd CursorMoved ' . g:softwrap_patterns . ' call <sid>enableSoftwrapAutocmdOnCursorHold()'
 augroup END
 
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    for f in g:softwrap_patterns
-      exec "autocmd CursorHold " . f . " call <SID>showSoftwrap(g:softwrap_unwrap)"
-    endfor
+    exec 'autocmd CursorHold ' . g:softwrap_patterns . ' call <SID>showSoftwrap(g:softwrap_unwrap)'
   augroup END
 endfunction
 
