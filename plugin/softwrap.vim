@@ -27,19 +27,19 @@ let g:softwrap_pum_unwrap = get(g:, 'softwrap_unwrap', v:false)
 let g:softwrap_buf_patterns = get(g:, 'softwrap_buf_patterns', '*')
 let g:softwrap_close_pum_mapping = get(g:, 'softwrap_close_pum_mapping', '<esc><esc>')
 
-if type(g:softwrap_pum_unwrap) != 6
+if type(g:softwrap_pum_unwrap) != v:t_bool
   echomsg 'Wrong type for g:softwrap_pum_unwrap'
   finish
 endif
 
-if type(g:softwrap_buf_patterns) == 3
+if type(g:softwrap_buf_patterns) == v:t_list
   let g:softwrap_buf_patterns = join(g:softwrap_buf_patterns, ',')
-elseif type(g:softwrap_buf_patterns) != 1
+elseif type(g:softwrap_buf_patterns) != v:t_string
   echomsg 'Wrong type for g:softwrap_buf_patterns.'
   finish
 endif
 
-if type(g:softwrap_close_pum_mapping) != 1
+if type(g:softwrap_close_pum_mapping) != v:t_string
   echomsg 'Wrong type for g:softwrap_close_pum_mapping.'
   finish
 endif
