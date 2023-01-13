@@ -23,15 +23,19 @@ if &compatible
   finish
 endif
 
-let g:softwrap_pum_unwrap = get(g:, 'softwrap_unwrap', v:false)
+let g:softwrap_unwrap_popup = get(g:, 'softwrap_unwrap_popup', v:false)
 let g:softwrap_buf_patterns = get(g:, 'softwrap_buf_patterns', '*')
-let g:softwrap_close_pum_mapping = get(g:, 'softwrap_close_pum_mapping', '<esc><esc>')
+let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
+
+function! s:isListOfStrings(list)
+  return len(a:list) != len(filter(a:list, {_,v -> type(v) == v:t_string}))
+endfunction
 
 if empty(g:softwrap_buf_patterns)
   echomsg 'SoftWrap: No pattern selected.'
   finish
 elseif type(g:softwrap_buf_patterns) == v:t_list
-  if s:isListOfStrings(g:softwrap_buf_patterns)
+  if <SID>isListOfStrings(g:softwrap_buf_patterns)
     echomsg 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
     finish
   endif
@@ -41,13 +45,13 @@ elseif type(g:softwrap_buf_patterns) != v:t_string
   finish
 endif
 
-if type(g:softwrap_pum_unwrap) != v:t_bool
-  echomsg 'SoftWrap: g:softwrap_pum_unwrap must be a boolean.'
+if type(g:softwrap_unwrap_popup) != v:t_bool
+  echomsg 'SoftWrap: g:softwrap_unwrap_popup must be a boolean.'
   finish
 endif
 
-if type(g:softwrap_close_pum_mapping) != v:t_string
-  echomsg 'SoftWrap: g:softwrap_close_pum_mapping must be a string.'
+if type(g:softwrap_close_popup_mapping) != v:t_string
+  echomsg 'SoftWrap: g:softwrap_close_popup_mapping must be a string.'
   finish
 endif
 
@@ -75,11 +79,11 @@ augroup END
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns . ' ++once call <SID>showSoftwrap(g:softwrap_pum_unwrap)'
+    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns . ' ++once call <SID>showSoftwrap(g:softwrap_unwrap_popup)'
   augroup END
 endfunction
 
-function! s:showSoftwrap(softwrap_unwrap)
+function! s:showSoftwrap(softwrap_unwrap_popup)
   if &wrap
     return
   endif
@@ -94,11 +98,11 @@ function! s:showSoftwrap(softwrap_unwrap)
   endif
   let available_screen = textwidth
   let popup_fst_col = fst_vis_scr_col_in_win
-  if a:softwrap_unwrap
+  if a:softwrap_unwrap_popup
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
-  let pum = popup_create(
+  let popup = popup_create(
     \   bufnr(),
     \   #{
     \      line: 'cursor',
@@ -108,7 +112,7 @@ function! s:showSoftwrap(softwrap_unwrap)
     \   }
     \ )
   call popup_setoptions(
-    \ pum,
+    \ popup,
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
@@ -117,15 +121,10 @@ function! s:showSoftwrap(softwrap_unwrap)
     \    scrollbar: 0
     \ })
 
-  exe 'nnoremap <silent> ' . g:softwrap_close_pum_mapping . ' :call <SID>closePUM(' . pum . ')<cr>'
-
+  exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<cr>'
 endfunction
 
-function! s:closePUM(pum)
-  call popup_close(a:pum)
-  exe 'nunmap ' . g:softwrap_close_pum_mapping
-endfunction
-
-function! s:isListOfStrings(l)
-  return len(l) != len(filter(l, {_,v -> type(v) == v:t_string}))
+function! s:closePopup(popup)
+  call popup_close(a:popup)
+  exe 'nunmap ' . g:softwrap_close_popup_mapping
 endfunction

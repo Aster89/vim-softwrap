@@ -8,9 +8,9 @@ CONTENTS                                                      *SoftWrapContents*
     1. Introduction .............................. |SoftWrapIntro|
     2. Configuration ............................ |SoftWrapConfig|
       2.1 Selective activation ......... |g:softwrap_buf_patterns|
-      2.2 Dismiss mapping ......... |g:softwrap_close_pum_mapping|
+      2.2 Dismiss mapping ....... |g:softwrap_close_popup_mapping|
       2.3 Styling ....................... |SoftWrapHighlightGroup|
-      2.4 Unwrapping ..................... |g:softwrap_pum_unwrap|
+      2.4 Unwrapping ................... |g:softwrap_unwrap_popup|
 
 
 ==============================================================================
@@ -53,7 +53,7 @@ Default: `'*'` (plugin active in every buffer)
 
 
 ------------------------------------------------------------------------------
-2.2 Dismiss mapping                               *g:softwrap_close_pum_mapping*
+2.2 Dismiss mapping                               *g:softwrap_close_popup_mapping*
 
 |Normal-mode| key combination to dismiss the popup.
 
@@ -80,9 +80,9 @@ Default:
 <
 
 ------------------------------------------------------------------------------
-2.4 Unwrapping                                           *g:softwrap_pum_unwrap*
+2.4 Unwrapping                                           *g:softwrap_unwrap_popup*
 
-Setting |g:softwrap_pum_unwrap| to |v:true| the |popup| will |unwrap| the line over
+Setting |g:softwrap_unwrap_popup| to |v:true| the |popup| will |unwrap| the line over
 adjacent |windows| (but still |wrap| at screen boundaries, clearly).
 
 Default: |v:false|
