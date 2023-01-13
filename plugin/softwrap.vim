@@ -33,11 +33,7 @@ if type(g:softwrap_pum_unwrap) != 6
 endif
 
 if type(g:softwrap_buf_patterns) == 3
-  if !empty(g:softwrap_buf_patterns)
-    let g:softwrap_buf_patterns = join(g:softwrap_buf_patterns, ',')
-  else
-    let g:softwrap_buf_patterns = ''
-  endif
+  let g:softwrap_buf_patterns = join(g:softwrap_buf_patterns, ',')
 elseif type(g:softwrap_buf_patterns) != 1
   echomsg 'Wrong type for g:softwrap_buf_patterns.'
   finish
@@ -48,10 +44,8 @@ if type(g:softwrap_close_pum_mapping) != 1
   finish
 endif
 
-if !hlexists('SoftWrapHighlightGroup')
-  highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
-  autocmd ColorScheme * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
-endif
+highlight default SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+autocmd ColorScheme * highlight default SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
 
 if v:versionlong >= 8023627
   " textoff is available only from cdf5fdb2948ecdd24c6a1e27ed33dfa847c2b3e4
@@ -111,7 +105,7 @@ function! s:showSoftwrap(softwrap_unwrap)
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
-    \    maxheight: float2nr(ceil(len(getline(line('.')))*1.0/(available_screen - (&showbreak == '' ? 0 : 1)))),
+    \    maxheight: float2nr(ceil(len(getline('.'))*1.0/(available_screen - (&showbreak == '' ? 0 : 1)))),
     \    maxwidth: available_screen,
     \    scrollbar: 0
     \ })
