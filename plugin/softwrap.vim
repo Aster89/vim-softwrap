@@ -87,19 +87,17 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
     return
   endif
 
-  let foldtext = foldtextresult(line('.'))
-  let isfold = foldtext != ''
-  if isfold
-    return
-  endif
-
   let winfo = getwininfo(win_getid())[0]
   let textoff = s:Textoff(winfo)
   let fst_vis_scr_col_in_win = winfo.wincol + textoff
   let fst_scr_col_in_win = screencol() - virtcol('.') + 1
 
+
+  let foldtext = foldtextresult(line('.'))
+  let isfold = foldtext != ''
   let textwidth = winfo.width - textoff
-  if fst_vis_scr_col_in_win == fst_scr_col_in_win && virtcol('$') - 1 <= textwidth
+  if (isfold ? v:true : (fst_vis_scr_col_in_win == fst_scr_col_in_win))
+        \ && (isfold ? len(foldtext) : (virtcol('$') - 1)) <= textwidth
     return
   endif
   let available_screen = textwidth
@@ -108,13 +106,22 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
+  let nlines = float2nr(ceil(len(isfold ? foldtext : getline('.'))*1.0/(available_screen - (&showbreak == '' ? 0 : 1))))
+  if nlines < 2
+    return
+  endif
+  if isfold
+    let foldfilling = substitute(&fillchars, '.*fold:\(.\).*', '\1', '')
+    echo strlen(foldfilling)
+      let foldtext = foldtext . repeat(foldfilling, nlines*(available_screen - (&showbreak == '' ? 0 : 1)) - len(foldtext) + 1)
+  endif
   let popup = popup_create(
-    \   bufnr(),
+    \   isfold ? foldtext : bufnr(),
     \   #{
     \      line: 'cursor',
     \      col: popup_fst_col,
     \      moved: 'any',
-    \      highlight: 'SoftWrapHighlightGroup'
+    \      highlight: isfold ? 'Folded' : 'SoftWrapHighlightGroup'
     \   }
     \ )
   call popup_setoptions(
@@ -122,7 +129,7 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
     \ #{
     \    wrap: 1,
     \    firstline: line('.'),
-    \    maxheight: float2nr(ceil(len(getline('.'))*1.0/(available_screen - (&showbreak == '' ? 0 : 1)))),
+    \    maxheight: nlines,
     \    maxwidth: available_screen,
     \    scrollbar: 0
     \ })
