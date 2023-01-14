@@ -6,11 +6,12 @@
 CONTENTS                                                      *SoftWrapContents*
 
     1. Introduction .............................. |SoftWrapIntro|
-    2. Configuration ............................ |SoftWrapConfig|
-      2.1 Selective activation ......... |g:softwrap_buf_patterns|
-      2.2 Dismiss mapping ....... |g:softwrap_close_popup_mapping|
-      2.3 Styling ....................... |SoftWrapHighlightGroup|
-      2.4 Unwrapping ................... |g:softwrap_unwrap_popup|
+    2. Take the reins ..................... |<Plug>(SoftwrapShow)|
+    3. Configuration ............................ |SoftWrapConfig|
+      3.1 Selective activation ......... |g:softwrap_buf_patterns|
+      3.2 Dismiss mapping ....... |g:softwrap_close_popup_mapping|
+      3.3 Styling ....................... |SoftWrapHighlightGroup|
+      3.4 Unwrapping ................... |g:softwrap_unwrap_popup|
 
 
 ==============================================================================
@@ -24,10 +25,25 @@ begins before the left border).
 >
 
 ==============================================================================
-2. Configuration                                                *SoftWrapConfig*
+2. Take the reins                                         *<Plug>(SoftwrapShow)*
+
+First of all, in case the default timing and logic of this plugin doesn't fit
+your needs (i.e. if you want to open the |popup| based on other logic than the
+one I chose), you can |<Plug>(SoftwrapShow)| in your own mapping.
+
+For instance, you can put the following in your |vimrc|,
+>
+  nmap <space><space> <Plug>(SoftwrapShow)
+<
+and hitting |space| twice will open the |popup| immediately, irrespective of where
+the buffer is (well, provided |nowrap| is active in that plugin, clearly).
+
+
+==============================================================================
+3. Configuration                                                *SoftWrapConfig*
 
 ------------------------------------------------------------------------------
-2.1 Selective activation                               *g:softwrap_buf_patterns*
+3.1 Selective activation                               *g:softwrap_buf_patterns*
 
 By default |SoftWrap| is active for every buffer, so the soft-wrapping will
 occur in any |window| where the cursor happens to be.
@@ -53,7 +69,7 @@ Default: `'*'` (plugin active in every buffer)
 
 
 ------------------------------------------------------------------------------
-2.2 Dismiss mapping                               *g:softwrap_close_popup_mapping*
+3.2 Dismiss mapping                             *g:softwrap_close_popup_mapping*
 
 |Normal-mode| key combination to dismiss the popup.
 
@@ -61,7 +77,7 @@ Default: '<Esc><Esc>'
 
 
 ------------------------------------------------------------------------------
-2.3 Styling                                             *SoftWrapHighlightGroup*
+3.3 Styling                                             *SoftWrapHighlightGroup*
 
 |Highlight-group| used to style the popup.
 
@@ -80,12 +96,13 @@ Default:
 <
 
 ------------------------------------------------------------------------------
-2.4 Unwrapping                                           *g:softwrap_unwrap_popup*
+3.4 Unwrapping                                         *g:softwrap_unwrap_popup*
 
 Setting |g:softwrap_unwrap_popup| to |v:true| the |popup| will |unwrap| the line over
 adjacent |windows| (but still |wrap| at screen boundaries, clearly).
 
 Default: |v:false|
+
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

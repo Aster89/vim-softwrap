@@ -127,3 +127,5 @@ function! s:closePopup(popup)
   call popup_close(a:popup)
   exe 'nunmap ' . g:softwrap_close_popup_mapping
 endfunction
+
+nnoremap <silent> <Plug>(SoftwrapShow) :call <SID>showSoftwrap(g:softwrap_unwrap_popup)<cr>
