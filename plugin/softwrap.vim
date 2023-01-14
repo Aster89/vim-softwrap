@@ -28,13 +28,13 @@ let g:softwrap_buf_patterns = get(g:, 'softwrap_buf_patterns', '*')
 let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
 
 function! s:isListOfStrings(list)
-  return len(a:list) != len(filter(a:list, {_,v -> type(v) == v:t_string}))
+  return len(a:list) == len(filter(a:list, {_,v -> type(v) == v:t_string}))
 endfunction
 
 if empty(g:softwrap_buf_patterns)
   finish
 elseif type(g:softwrap_buf_patterns) == v:t_list
-  if <SID>isListOfStrings(g:softwrap_buf_patterns)
+  if !<SID>isListOfStrings(g:softwrap_buf_patterns)
     echoerr 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
     finish
   endif
