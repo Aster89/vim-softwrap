@@ -1,9 +1,12 @@
+<Plug>(SoftwrapShow)	softwrap.txt	/*<Plug>(SoftwrapShow)*
 SoftWrap	softwrap.txt	/*SoftWrap*
-SoftWrapConfig	softwrap.txt	/*SoftWrapConfig*
 SoftWrapContents	softwrap.txt	/*SoftWrapContents*
 SoftWrapHighlightGroup	softwrap.txt	/*SoftWrapHighlightGroup*
 SoftWrapIntro	softwrap.txt	/*SoftWrapIntro*
+SoftWrapUsageAndConfig	softwrap.txt	/*SoftWrapUsageAndConfig*
+bugs	softwrap.txt	/*bugs*
 g:softwrap_buf_patterns	softwrap.txt	/*g:softwrap_buf_patterns*
 g:softwrap_close_popup_mapping	softwrap.txt	/*g:softwrap_close_popup_mapping*
+g:softwrap_open_popup_mapping	softwrap.txt	/*g:softwrap_open_popup_mapping*
 g:softwrap_unwrap_popup	softwrap.txt	/*g:softwrap_unwrap_popup*
 softwrap.txt	softwrap.txt	/*softwrap.txt*

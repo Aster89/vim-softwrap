@@ -1,10 +1,10 @@
 # vim↪softwrap
 
-When [`nowrap`][1] is active and the current line is not entirely visible (_i.e._ there is text [preceding the character visible in the first column][2] and/or text [following the character visible in the last column][3]), wrap current line on [`CursorHold`][4] without altering the buffer nor the options. This implies that a soft-wrapped line will likely cover part of the line(s) below it; <kbd>Escape</kbd><kbd>Escape</kbd> can be used to dismiss the wrapped line, but you can change the combo by setting `g:softwrap_close_popup_mapping`.
+When [`nowrap`][1] is active and the current line is not entirely visible (_i.e._ there is text [preceding the character visible in the first column][2] and/or text [following the character visible in the last column][3]), wrap current line on [`CursorHold`][4] without altering the buffer nor the options. This implies that a soft-wrapped line will likely cover part of the line(s) below it.
 
-The plugin is only active for the buffers matching the pattern defined by `g:softwrap_patterns`, which can be a string or a list of strings (in the latter case they are joined by interspersing commas in between the items).
+<kbd>Escape</kbd><kbd>Escape</kbd> can be used to dismiss the wrapped line, and <kbd>Space</kbd><kbd>Space</kbd> can be used to show it again, but you can change the combos by setting `g:softwrap_close_popup_mapping` and `g:softwrap_open_popup_mapping` respectively.
 
-The highlight group used by the pop-up is `SoftWrapHighlighGroup`, and can be customized.
+Furthermore, you can use `g:softwrap_buf_patterns` to govern for which type of files the popup should be triggered, and whether it should do so on cursor movement or on cursor staying still.
 
 See `:help softwrap` for details.
 
