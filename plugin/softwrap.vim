@@ -86,6 +86,13 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
   if &wrap
     return
   endif
+
+  let foldtext = foldtextresult(line('.'))
+  let isfold = foldtext != ''
+  if isfold
+    return
+  endif
+
   let winfo = getwininfo(win_getid())[0]
   let textoff = s:Textoff(winfo)
   let fst_vis_scr_col_in_win = winfo.wincol + textoff
