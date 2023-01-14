@@ -32,26 +32,25 @@ function! s:isListOfStrings(list)
 endfunction
 
 if empty(g:softwrap_buf_patterns)
-  echomsg 'SoftWrap: No pattern selected.'
   finish
 elseif type(g:softwrap_buf_patterns) == v:t_list
   if <SID>isListOfStrings(g:softwrap_buf_patterns)
-    echomsg 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
+    echoerr 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
     finish
   endif
   let g:softwrap_buf_patterns = join(g:softwrap_buf_patterns, ',')
 elseif type(g:softwrap_buf_patterns) != v:t_string
-  echomsg 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
+  echoerr 'SoftWrap: g:softwrap_buf_patterns must be a string or a list of strings.'
   finish
 endif
 
 if type(g:softwrap_unwrap_popup) != v:t_bool
-  echomsg 'SoftWrap: g:softwrap_unwrap_popup must be a boolean.'
+  echoerr 'SoftWrap: g:softwrap_unwrap_popup must be a boolean.'
   finish
 endif
 
 if type(g:softwrap_close_popup_mapping) != v:t_string
-  echomsg 'SoftWrap: g:softwrap_close_popup_mapping must be a string.'
+  echoerr 'SoftWrap: g:softwrap_close_popup_mapping must be a string.'
   finish
 endif
 
