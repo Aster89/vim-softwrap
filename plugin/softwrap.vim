@@ -96,7 +96,7 @@ augroup SoftWrap
     exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onHold . ' call <SID>enableSoftwrapAutocmdOnCursorHold()'
   endif
   if !empty(g:softwrap_buf_patterns.onMove)
-    exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onMove . ' call <SID>showSoftwrap(g:softwrap_unwrap_popup)'
+    exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onMove . ' call <SID>showSoftwrap()'
     exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onMove . " call autocmd_delete([#{ group: 'ShowSoftwrapOnCursorHold', event: 'CursorHold' }])"
   endif
 augroup END
@@ -107,11 +107,11 @@ augroup END
 function! s:enableSoftwrapAutocmdOnCursorHold()
   augroup ShowSoftwrapOnCursorHold
     autocmd!
-    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns.onHold . ' ++once call <SID>showSoftwrap(g:softwrap_unwrap_popup)'
+    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns.onHold . ' ++once call <SID>showSoftwrap()'
   augroup END
 endfunction
 
-function! s:showSoftwrap(softwrap_unwrap_popup)
+function! s:showSoftwrap()
   if &wrap
     return
   endif
@@ -120,7 +120,6 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
   let textoff = s:Textoff(winfo)
   let fst_vis_scr_col_in_win = winfo.wincol + textoff
   let fst_scr_col_in_win = screencol() - virtcol('.') + 1
-
 
   let foldtext = foldtextresult(line('.'))
   let isfold = foldtext != ''
@@ -131,7 +130,7 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
   endif
   let available_screen = textwidth
   let popup_fst_col = fst_vis_scr_col_in_win
-  if a:softwrap_unwrap_popup
+  if g:softwrap_unwrap_popup
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
@@ -166,7 +165,7 @@ function! s:closePopup(popup)
   exe 'nunmap ' . g:softwrap_close_popup_mapping
 endfunction
 
-nnoremap <silent> <Plug>(SoftwrapShow) :call <SID>showSoftwrap(g:softwrap_unwrap_popup)<cr>
+nnoremap <silent> <Plug>(SoftwrapShow) :call <SID>showSoftwrap()<cr>
 
 if !hasmapto('<Plug>(SoftwrapShow)')
   exe 'nmap ' . g:softwrap_open_popup_mapping . ' <Plug>(SoftwrapShow)'
