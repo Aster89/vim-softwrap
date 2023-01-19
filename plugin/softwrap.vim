@@ -147,22 +147,17 @@ function! s:showSoftwrap(softwrap_unwrap_popup)
   let popup = popup_create(
     \   isfold ? foldtext : bufnr(),
     \   #{
-    \      line: 'cursor',
     \      col: popup_fst_col,
+    \      firstline: line('.'),
+    \      highlight: isfold ? 'Folded' : 'SoftWrapHighlightGroup',
+    \      line: 'cursor',
+    \      maxheight: nlines,
+    \      maxwidth: available_screen,
     \      moved: 'any',
-    \      highlight: isfold ? 'Folded' : 'SoftWrapHighlightGroup'
+    \      scrollbar: 0,
+    \      wrap: 1
     \   }
     \ )
-  call popup_setoptions(
-    \ popup,
-    \ #{
-    \    wrap: 1,
-    \    firstline: line('.'),
-    \    maxheight: nlines,
-    \    maxwidth: available_screen,
-    \    scrollbar: 0
-    \ })
-
   exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<cr>'
 endfunction
 
