@@ -23,54 +23,16 @@ if &compatible
   finish
 endif
 
-let g:softwrap_buf_patterns = get(g:, 'softwrap_buf_patterns', #{ onHold: '*', onMove: '' })
-
-if empty(g:softwrap_buf_patterns) && !hasmapto('<Plug>(SoftwrapShow)')
-  finish
-endif
-
-function! s:isListOfStrings(list)
-  return (type(a:list) == v:t_list) && (len(a:list) == len(filter(a:list, {_,v -> type(v) == v:t_string})))
-endfunction
-
-if type(g:softwrap_buf_patterns) != v:t_string
-      \ && !<SID>isListOfStrings(g:softwrap_buf_patterns)
-      \ && (type(g:softwrap_buf_patterns) != v:t_dict
-      \ || len(g:softwrap_buf_patterns) != 2
-      \ || !has_key(g:softwrap_buf_patterns, 'onHold')
-      \ || !has_key(g:softwrap_buf_patterns, 'onMove')
-      \ || (type(g:softwrap_buf_patterns.onHold) != v:t_string && !<SID>isListOfStrings(g:softwrap_buf_patterns.onHold))
-      \ || (type(g:softwrap_buf_patterns.onMove) != v:t_string && !<SID>isListOfStrings(g:softwrap_buf_patterns.onMove)))
-  echoerr 'SoftWrap: incorrect definition of g:softwrap_buf_patterns (see :help g:softwrap_buf_patterns for the format).'
-  finish
-endif
-
-if type(g:softwrap_buf_patterns) != v:t_dict
-  let g:softwrap_buf_patterns = #{ onHold: g:softwrap_buf_patterns, onMove: '' }
-endif
-
-if type(g:softwrap_buf_patterns.onMove) != v:t_string
-  let g:softwrap_buf_patterns.onMove = join(g:softwrap_buf_patterns.onMove, ',')
-endif
-if type(g:softwrap_buf_patterns.onHold) != v:t_string
-  let g:softwrap_buf_patterns.onHold = join(g:softwrap_buf_patterns.onHold, ',')
-endif
-
 let g:softwrap_unwrap_popup = get(g:, 'softwrap_unwrap_popup', v:false)
+let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
 
 if type(g:softwrap_unwrap_popup) != v:t_bool
   echoerr 'SoftWrap: g:softwrap_unwrap_popup must be a boolean.'
   finish
 endif
 
-let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
-let g:softwrap_open_popup_mapping = get(g:, 'softwrap_open_popup_mapping', '<space><space>')
-if empty(g:softwrap_open_popup_mapping) && hasmapto('<Plug>(SoftwrapShow)')
-  echoerr 'SoftWrap: why have you defined g:softwrap_open_popup_mapping if you are mapping <Plug>(SoftwrapShow) yourself?'
-endif
-
-if (type(g:softwrap_close_popup_mapping) != v:t_string) || (type(g:softwrap_open_popup_mapping) != v:t_string)
-  echoerr 'SoftWrap: both g:softwrap_close_popup_mapping and g:softwrap_open_popup_mapping must be a string.'
+if type(g:softwrap_close_popup_mapping) != v:t_string
+  echoerr 'SoftWrap: g:softwrap_close_popup_mapping must be a string.'
   finish
 endif
 
@@ -90,28 +52,7 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
-augroup SoftWrap
-  autocmd!
-  if !empty(g:softwrap_buf_patterns.onHold)
-    exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onHold . ' call <SID>enableSoftwrapAutocmdOnCursorHold()'
-  endif
-  if !empty(g:softwrap_buf_patterns.onMove)
-    exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onMove . ' call <SID>showSoftwrap()'
-    exec 'autocmd CursorMoved ' . g:softwrap_buf_patterns.onMove . " call autocmd_delete([#{ group: 'ShowSoftwrapOnCursorHold', event: 'CursorHold' }])"
-  endif
-augroup END
-
-augroup ShowSoftwrapOnCursorHold
-augroup END
-
-function! s:enableSoftwrapAutocmdOnCursorHold()
-  augroup ShowSoftwrapOnCursorHold
-    autocmd!
-    exec 'autocmd CursorHold ' . g:softwrap_buf_patterns.onHold . ' ++once call <SID>showSoftwrap()'
-  augroup END
-endfunction
-
-function! s:showSoftwrap()
+function! SoftwrapShow()
   if &wrap
     return
   endif
@@ -157,23 +98,10 @@ function! s:showSoftwrap()
     \      wrap: 1
     \   }
     \ )
-  exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<cr>'
+  exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<CR>'
 endfunction
 
 function! s:closePopup(popup)
   call popup_close(a:popup)
   exe 'nunmap ' . g:softwrap_close_popup_mapping
 endfunction
-
-nnoremap <silent> <Plug>(SoftwrapShow) :call <SID>showSoftwrap()<cr>
-
-function! s:disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()
-  augroup ShowSoftwrapOnCursorHold
-    autocmd!
-  augroup END
-  call <SID>showSoftwrap()
-endfunction
-
-if !hasmapto('<Plug>(SoftwrapShow)')
-  exe 'nnoremap <silent> ' . g:softwrap_open_popup_mapping . ' :call <SID>disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()<CR>'
-endif
