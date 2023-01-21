@@ -167,6 +167,13 @@ endfunction
 
 nnoremap <silent> <Plug>(SoftwrapShow) :call <SID>showSoftwrap()<cr>
 
+function! s:disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()
+  augroup ShowSoftwrapOnCursorHold
+    autocmd!
+  augroup END
+  call <SID>showSoftwrap()
+endfunction
+
 if !hasmapto('<Plug>(SoftwrapShow)')
-  exe 'nmap ' . g:softwrap_open_popup_mapping . ' <Plug>(SoftwrapShow)'
+  exe 'nnoremap <silent> ' . g:softwrap_open_popup_mapping . ' :call <SID>disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()<CR>'
 endif
