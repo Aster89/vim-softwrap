@@ -8,6 +8,7 @@ Softwrap-show-always	softwrap.txt	/*Softwrap-show-always*
 Softwrap-show-on-request	softwrap.txt	/*Softwrap-show-on-request*
 SoftwrapContents	softwrap.txt	/*SoftwrapContents*
 SoftwrapHighlightGroup	softwrap.txt	/*SoftwrapHighlightGroup*
+SoftwrapShow	softwrap.txt	/*SoftwrapShow*
 g:softwrap_close_popup_mapping	softwrap.txt	/*g:softwrap_close_popup_mapping*
 g:softwrap_unwrap_popup	softwrap.txt	/*g:softwrap_unwrap_popup*
 softwrap.txt	softwrap.txt	/*softwrap.txt*

@@ -27,7 +27,7 @@ a |popup| will show the current line wrapped (as if |wrap| was active on the
 current line only) over the following lines. Hit <Esc><Esc> (configurable) or
 move the cursor to dismiss the |popup|.
 
-In other words, the plugin exposes the `SoftwrapShow` function that does two
+In other words, the plugin exposes the |SoftwrapShow| function that does two
 things:
 
   1. it shows a |popup| (which will close for any cursor movement) with the
@@ -74,7 +74,7 @@ in your |vimrc| should suffice:
 <
 
 ==============================================================================
-3. Advanced usage                                            *Softwrap-advanced*
+3. Advanced usage                               *SoftwrapShow* *Softwrap-advanced*
 
 This is what I have in my |vimrc|:
 >
