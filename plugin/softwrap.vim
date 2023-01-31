@@ -52,7 +52,7 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
-function! SoftwrapShow()
+function! s:softwrapShow()
   if &wrap
     return
   endif
@@ -105,3 +105,7 @@ function! s:closePopup(popup)
   call popup_close(a:popup)
   exe 'nunmap ' . g:softwrap_close_popup_mapping
 endfunction
+
+nnoremap <Plug>(SoftWrap) :call s:softwrapShow()<cr>
+
+command! SoftWrap call s:softwrapShow()
