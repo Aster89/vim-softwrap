@@ -1,57 +1,64 @@
 *softwrap.txt*         For Vim version 8.2          Last change: 2023 January 21
-*Softwrap*
+*SoftWrap*
 
 
 ==============================================================================
-CONTENTS                                                      *SoftwrapContents*
+CONTENTS                                                      *SoftWrapContents*
 
-        1. Intro .................................... |Softwrap-intro|
-        2. Basic usage ............................. |Softwrap-basics|
-          2.1 Wrap on request ............. |Softwrap-show-on-request|
-          2.2 Always wrap current line ........ |Softwrap-show-always|
-        3. Advanced usage ........................ |Softwrap-advanced|
-        4. Configuration ........................... |Softwrap-config|
+        1. Intro .................................... |SoftWrap-intro|
+        2. Basic usage ............................. |SoftWrap-basics|
+          2.1 Wrap on request ............. |SoftWrap-show-on-request|
+          2.2 Always wrap current line ........ |SoftWrap-show-always|
+        3. Advanced usage ........................ |SoftWrap-advanced|
+        4. Configuration ........................... |SoftWrap-config|
           4.1 Dismiss the popup ..... |g:softwrap_close_popup_mapping|
-          4.2 Styling ....................... |SoftwrapHighlightGroup|
+          4.2 Styling ....................... |SoftWrapHighlightGroup|
           4.3 Unwrapping ................... |g:softwrap_unwrap_popup|
-        5. Bugs ...................................... |Softwrap-bugs|
+        5. Bugs ...................................... |SoftWrap-bugs|
 
 ==============================================================================
-1. Intro                                                        *Softwrap-intro*
+1. Intro                                                        *SoftWrap-intro*
 
 Plugin for soft-wrapping current line when |nowrap| is active.
 
 Open a file, |set| |nowrap|, move the cursor to a line long enough that it
-finishes beyond the right border of the |window|, `:call SoftwrapShow()`, and
-a |popup| will show the current line wrapped (as if |wrap| was active on the
-current line only) over the following lines. Hit <Esc><Esc> (configurable) or
-move the cursor to dismiss the |popup|.
+finishes beyond the right border of the |window|, `:SoftWrapShow`, and a
+|popup| will show the current line wrapped (as if |wrap| was active on the
+current line only) over the following lines. Hit <Esc><Esc> (configurable, see
+|g:softwrap_close_popup_mapping|) or move the cursor to dismiss the |popup|.
 
-In other words, the plugin exposes the |SoftwrapShow| function that does two
+In other words, the plugin exposes the |:SoftWrapShow| command that does two
 things:
 
   1. it shows a |popup| (which will close for any cursor movement) with the
      current line wrapped on itself and the following lines,
-  2. and it activates a mapping (<Esc><Esc> by default) to dismiss that
-     |popup|.
+  2. and it activates a mapping (|g:softwrap_close_popup_mapping| defaulted to
+     <Esc><Esc>) to dismiss that |popup|.
 
-You can do anything you want with that function. See |Softwrap-basics| and
-|Softwrap-advanced| for a basic and advanced usage respectively.
+It also gives you a |<Plug>(SoftWrapShow)| mapping, and you can do anything
+you want with it. See |SoftWrap-basics| and |SoftWrap-advanced| for a basic
+and advanced usage respectively.
 
 You can install the plugin however you want, it doesn't really matter. Anyway,
 the plugin is [here][1].
 >
 
 ==============================================================================
-2. Basic usage                                                 *Softwrap-basics*
+2. Basic usage                                                 *SoftWrap-basics*
 
 ------------------------------------------------------------------------------
-2.1 Wrap on request                                   *Softwrap-show-on-request*
+2.1 Wrap on request                                   *SoftWrap-show-on-request*
+                                                                 *:SoftWrapShow*
+                                                          *<Plug>(SoftWrapShow)*
 
-Since you probably don't really want to `:call SoftwrapShow()` manually every
-time, a really basic setup is to put this in your |vimrc|:
+Since you probably don't really want to `:SoftWrapShow` manually every time, a
+really basic setup is to put, in your |vimrc|, this
 >
-  nnoremap <silent> <Space><Space> :call SoftwrapShow()<CR>
+  nnoremap <silent> <Space><Space> :SoftWrapShow<CR>
+<
+or this
+>
+  nmap <silent> <space><space> <Plug>(SoftWrapShow)
 <
 This way, hitting <Space><Space> in |Normal-mode| will trigger the plugin on
 the current line. As already said, hitting <Esc><Esc> or moving the cursor
@@ -62,50 +69,49 @@ i.e. you open 2 popups one on top of the other, then <Esc><Esc> will only
 close the one on top, and the other will close only when you move the cursor.
 
 ------------------------------------------------------------------------------
-2.2 Always wrap current line                              *Softwrap-show-always*
+2.2 Always wrap current line                              *SoftWrap-show-always*
 
 If you want to always show the current line wrapped, inserting the following
 in your |vimrc| should suffice:
 >
   augroup SoftWrap
     autocmd!
-    autocmd CursorMoved * call SoftwrapShow()
+    autocmd CursorMoved * SoftWrapShow
   augroup END
 <
 
 ==============================================================================
-3. Advanced usage                               *SoftwrapShow* *Softwrap-advanced*
+3. Advanced usage                               *SoftWrapShow* *SoftWrap-advanced*
 
-This is what I have in my |vimrc|:
+This is what I have in my |vimrc| (explanation below):
 >
   augroup SoftWrap
     autocmd!
     autocmd CursorMoved *
-          \ call <SID>enableSoftwrapAutocmdOnCursorHold()
+          \ call <SID>enableSoftWrapAutocmdOnCursorHold()
     autocmd CursorMoved vimspector.{Variables,StackTrace,Watches}
-          \ call SoftwrapShow()
+          \ SoftWrapShow
     autocmd CursorMoved vimspector.{Variables,StackTrace,Watches}
-          \ call autocmd_delete([#{ group: 'ShowSoftwrapOnCursorHold' }])
+          \ call autocmd_delete([#{ group: 'ShowSoftWrapOnCursorHold' }])
   augroup END
 
-  function! s:enableSoftwrapAutocmdOnCursorHold()
-    augroup ShowSoftwrapOnCursorHold
+  function! s:enableSoftWrapAutocmdOnCursorHold()
+    augroup ShowSoftWrapOnCursorHold
       autocmd!
-      autocmd CursorHold * ++once call SoftwrapShow()
+      autocmd CursorHold * ++once SoftWrapShow
     augroup END
   endfunction
 
-  function! s:disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()
-    augroup ShowSoftwrapOnCursorHold
+  function! s:disableSoftWrapAutocmdOnCursorHoldAndShowSoftWrap()
+    augroup ShowSoftWrapOnCursorHold
       autocmd!
     augroup END
-    call SoftwrapShow()
+    SoftWrapShow
   endfunction
 
   nnoremap <silent> <space><space>
-    \ :call <SID>disableSoftwrapAutocmdOnCursorHoldAndShowSoftwrap()<CR>
+    \ :call <SID>disableSoftWrapAutocmdOnCursorHoldAndShowSoftWrap()<CR>
 <
-
 It's not a trivial set up but it allows me to do the following:
 
   - In the 3 buffers `vimspector.{Variables,StackTrace,Watches}`, the |popup|
@@ -117,10 +123,10 @@ It's not a trivial set up but it allows me to do the following:
   - In either case, I can dismiss the |popup| via <Esc><Esc>.
   - After <Esc><Esc>, I can show the |popup| again via <Space><Space>.
 
-Note that this suffers the same issue noted at |Softwrap-show-on-request|.
+Note that this suffers the same issue noted at |SoftWrap-show-on-request|.
 
 ==============================================================================
-4. Configuration                                               *Softwrap-config*
+4. Configuration                                               *SoftWrap-config*
 
 ------------------------------------------------------------------------------
 4.1 Dismiss the popup                           *g:softwrap_close_popup_mapping*
@@ -131,14 +137,14 @@ Default: <Esc><Esc>
 
 
 ------------------------------------------------------------------------------
-4.2 Styling                                             *SoftwrapHighlightGroup*
+4.2 Styling                                             *SoftWrapHighlightGroup*
 
 |Highlight-group| used to style the popup.
 
 If you don't like the default, you can customize the style by defining the
 following in your |vimrc| _before_ any |colorscheme| command.
 >
-  autocmd ColorScheme * highlight SoftwrapHighlighGroup ctermbg=red
+  autocmd ColorScheme * highlight SoftWrapHighlighGroup ctermbg=red
 <
 (Note that you can't customize |ctermfg|, as the |popup| uses the syntax
 highlighting of the current line.)
@@ -146,7 +152,7 @@ highlighting of the current line.)
 Default:
 >
   autocmd ColorScheme
-    \ * highlight SoftwrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
+    \ * highlight SoftWrapHighlightGroup ctermbg=NONE ctermfg=NONE cterm=bold
 <
 
 ------------------------------------------------------------------------------
@@ -159,7 +165,7 @@ Default: |v:false|
 
 
 ==============================================================================
-5. Bugs                                                          *Softwrap-bugs*
+5. Bugs                                                          *SoftWrap-bugs*
 
 I'm fundamentally new to plugin writing (I've written only another one, [2],
 but nobody is using it), so I expect this one to be full of bugs. Feel free
