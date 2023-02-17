@@ -23,11 +23,11 @@ if &compatible
   finish
 endif
 
-let g:softwrap_unwrap_popup = get(g:, 'softwrap_unwrap_popup', v:false)
+let g:softwrap_spill = get(g:, 'softwrap_spill', v:false)
 let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
 
-if type(g:softwrap_unwrap_popup) != v:t_bool
-  echoerr 'SoftWrap: g:softwrap_unwrap_popup must be a boolean.'
+if type(g:softwrap_spill) != v:t_bool
+  echoerr 'SoftWrap: g:softwrap_spill must be a boolean.'
   finish
 endif
 
@@ -52,7 +52,7 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
-function! s:softwrapShow()
+function! s:softwrapShow(unwrap = g:softwrap_spill)
   if &wrap
     return
   endif
@@ -71,12 +71,12 @@ function! s:softwrapShow()
   endif
   let available_screen = textwidth
   let popup_fst_col = fst_vis_scr_col_in_win
-  if g:softwrap_unwrap_popup
+  if a:unwrap
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
   let nlines = float2nr(ceil(len(isfold ? foldtext : getline('.'))*1.0/(available_screen - (&showbreak == '' ? 0 : 1))))
-  if nlines < 2
+  if nlines < 2 && !a:unwrap
     return
   endif
   if isfold
@@ -102,10 +102,7 @@ function! s:softwrapShow()
 endfunction
 
 function! s:closePopup(popup)
-  call popup_close(a:popup)
-  exe 'nunmap ' . g:softwrap_close_popup_mapping
+  exe 'call popup_close(' . a:popup . ') | nunmap ' . g:softwrap_close_popup_mapping
 endfunction
 
-nnoremap <Plug>(SoftWrapShow) :call <SID>softwrapShow()<cr>
-
-command! SoftWrapShow call s:softwrapShow()
+command! -nargs=? SoftWrapShow call s:softwrapShow(<args>)
