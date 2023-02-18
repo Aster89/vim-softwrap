@@ -105,4 +105,5 @@ function! s:closePopup(popup)
   exe 'call popup_close(' . a:popup . ') | nunmap ' . g:softwrap_close_popup_mapping
 endfunction
 
-command! -nargs=? SoftWrapShow call s:softwrapShow(<args>)
+let s:true_or_false = {-> ['v:false', 'v:true']}
+command! -nargs=? -complete=customlist,s:true_or_false SoftWrapShow call s:softwrapShow(<args>)
