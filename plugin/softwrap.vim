@@ -24,6 +24,7 @@ if &compatible
 endif
 
 let g:softwrap_spill = get(g:, 'softwrap_spill', v:false)
+let g:softwrap_hollow = get(g:, 'softwrap_hollow', v:false)
 let g:softwrap_close_popup_mapping = get(g:, 'softwrap_close_popup_mapping', '<esc><esc>')
 
 if type(g:softwrap_spill) != v:t_bool
@@ -52,7 +53,31 @@ else
         \ + (empty(sign_getplaced(bufname(), {'group': '*'})[0].signs) ? 0 : 2)}
 endif
 
-function! s:softwrapShow(unwrap = g:softwrap_spill)
+function! s:softwrapShow(...)
+  let nargs = [0, 0]
+  let unwrap = g:softwrap_spill
+  if index(a:000, 'wrap') != -1
+    let nargs[0] += 1
+    let unwrap = v:false
+  endif
+  if index(a:000, 'unwrap') != -1
+    let nargs[0] += 1
+    let unwrap = v:true
+  endif
+  let hollow_leftover = g:softwrap_hollow
+  if index(a:000, 'hollow') != -1
+    let nargs[1] += 1
+    let hollow_leftover = v:true
+  endif
+  if index(a:000, 'nohollow') != -1
+    let nargs[1] += 1
+    let hollow_leftover = v:false
+  endif
+  if a:0 > 2 || len(filter(nargs, {_, i -> i <= 1})) != 2
+    echom 'Wrong args'
+    return
+  endif
+
   if &wrap
     return
   endif
@@ -71,18 +96,22 @@ function! s:softwrapShow(unwrap = g:softwrap_spill)
   endif
   let available_screen = textwidth
   let popup_fst_col = fst_vis_scr_col_in_win
-  if a:unwrap
+  if unwrap
     let available_screen = &columns - max([0, screencol() - virtcol('.')])
     let popup_fst_col = screencol() - virtcol('.') + 1
   endif
   let nlines = float2nr(ceil(len(isfold ? foldtext : getline('.'))*1.0/(available_screen - (&showbreak == '' ? 0 : 1))))
-  if nlines < 2 && !a:unwrap
+  if nlines < 2 && !unwrap
     return
   endif
   if isfold
     let foldfilling = substitute(&fillchars, '.*fold:\(.\).*', '\1', '')
-    echo strlen(foldfilling)
-      let foldtext = foldtext . repeat(foldfilling, nlines*(available_screen - (&showbreak == '' ? 0 : 1)) - len(foldtext) + 1)
+    let foldtext = foldtext . repeat(foldfilling, nlines*(available_screen - (&showbreak == '' ? 0 : 1)) - len(foldtext) + 1)
+  endif
+  let leftover_mask = []
+  if hollow_leftover
+    let leftover = (available_screen * nlines) - (len(getline('.')) + (&showbreak == '' ? 0 : (nlines - 1)))
+    let leftover_mask = [[-leftover, -1, -1, -1]]
   endif
   let popup = popup_create(
     \   isfold ? foldtext : bufnr(),
@@ -91,6 +120,7 @@ function! s:softwrapShow(unwrap = g:softwrap_spill)
     \      firstline: line('.'),
     \      highlight: isfold ? 'Folded' : 'SoftWrapHighlightGroup',
     \      line: 'cursor',
+    \      mask: isfold ? [] : leftover_mask,
     \      maxheight: nlines,
     \      maxwidth: available_screen,
     \      moved: 'any',
@@ -105,5 +135,4 @@ function! s:closePopup(popup)
   exe 'call popup_close(' . a:popup . ') | nunmap ' . g:softwrap_close_popup_mapping
 endfunction
 
-let s:true_or_false = {-> ['v:false', 'v:true']}
-command! -nargs=? -complete=customlist,s:true_or_false SoftWrapShow call s:softwrapShow(<args>)
+command! -nargs=* SoftWrapShow call s:softwrapShow(<f-args>)

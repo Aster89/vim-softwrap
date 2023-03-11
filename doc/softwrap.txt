@@ -48,21 +48,28 @@ In fact, the command does two things:
   2. and it activates a mapping (|g:softwrap_close_popup_mapping| defaulted to
      <Esc><Esc>) to dismiss that |popup|.
 
-The command optionally accepts a |Boolean| argument (i.e.  |v:true| or
-|v:false|) to govern whether the current line should be wrapped within the
-current window (as if |wrap| was set), or should spill over adjacent windows
-as much as the whole terminal allows before wrapping. This optional argument
-defaults to |g:softwrap_spill| (which defaults to |v:false|).
+The command accepts 2 optional arguments (in any order) that can have these
+values:
+  - `wrap`/`unwrap` determines whether the current line should be wrapped
+    within the current window (as if |wrap| was set), or should spill over
+    adjacent windows as much as the whole terminal allows before wrapping.
+    This argument defaults to |g:softwrap_spill|. Note: `v:true` corresponds
+    to `nowrap`, `v:false` to `wrap`.
+  - `hollow`/`nohollow` determines whether the trailing part of the last line
+    of the |popup| should be made transparent (so that the text underneath the
+    |popup| is visible (see |popup-mask| for this feature). This argument
+    defaults to |g:softwrap_hollow| (`v:true` corresponds to `hollow`,
+    `v:false` to `nohollow`).
 
 See |SoftWrap-basics| and |SoftWrap-advanced| for a basic and advanced usage
 respectively.
 
-Note that |:SoftWrapShow| is **not** meant to be used manually as an ex command,
-because doing so the command would compute the wrong position for the |popup|.
-The reason of this limitation is that the core function of the plugin has to
-use |screencol()| (among other functions) to correctly position the |popup|,
-and it is precisely |screencol()| which imposes this limitation (see the Note
-at that help page).
+Note that |:SoftWrapShow| is **not** meant to be used manually as an ex
+command, because doing so the command would compute the wrong position for the
+|popup|. The reason of this limitation is that the core function of the plugin
+has to use |screencol()| (among other functions) to correctly position the
+|popup|, and it is precisely |screencol()| which imposes this limitation (see
+the Note at that help page).
 >
 
 ==============================================================================
@@ -99,7 +106,7 @@ suffice:
 <
 
 ==============================================================================
-4. Advanced usage                               *SoftWrapShow* *SoftWrap-advanced*
+4. Advanced usage                                            *SoftWrap-advanced*
 
 This is what I have in my |vimrc| (explanation below):
 >
@@ -108,7 +115,7 @@ This is what I have in my |vimrc| (explanation below):
     autocmd CursorMoved *
           \ call <SID>enableSoftWrapAutocmdOnCursorHold()
     autocmd CursorMoved vimspector.{Variables,StackTrace,Watches}
-          \ SoftWrapShow v:true
+          \ SoftWrapShow unwrap hollow
     autocmd CursorMoved vimspector.{Variables,StackTrace,Watches}
           \ call autocmd_delete([#{ group: 'ShowSoftWrapOnCursorHold' }])
   augroup END
@@ -116,7 +123,7 @@ This is what I have in my |vimrc| (explanation below):
   function! s:enableSoftWrapAutocmdOnCursorHold()
     augroup ShowSoftWrapOnCursorHold
       autocmd!
-      autocmd CursorHold * ++once SoftWrapShow
+      autocmd CursorHold * ++once SoftWrapShow wrap hollow
     augroup END
   endfunction
 
@@ -124,7 +131,7 @@ This is what I have in my |vimrc| (explanation below):
     augroup ShowSoftWrapOnCursorHold
       autocmd!
     augroup END
-    SoftWrapShow
+    SoftWrapShow wrap hollow
   endfunction
 
   nnoremap <silent> <Space><Space>
@@ -134,16 +141,18 @@ It's not a trivial set up but it allows me to do the following:
 
   - In the 3 buffers `vimspector.{Variables,StackTrace,Watches}`, the |popup|
     is shown immediately, on |CursorMoved|, and it is spilled over adiacent
-    windows. This is because those windows (created by |vimspector|, see [4])
-    are narrow, and the lines in them are often extremely long (I experience
-    this daily with C++ because of template instatiations), so it's unlikely I
-    see useful information without seeing the whole line; making them spill
-    gives more room to see very long line.
+    windows (via `unwrap` option). This is because those windows (created by
+    |vimspector|, see [4]) are narrow, and the lines in them are often
+    extremely long (I experience this daily with C++ because of template
+    instatiations), so it's unlikely I see useful information without seeing
+    the whole line; making them spill gives more room to see very long line.
   - In any other buffer the |popup| is shown on |CursorHold|, and it is not
-    spilled over adjacent windows, as windows in which I code are generally
-    wide enough, and the codelines are never that long.
+    spilled over adjacent windows (`wrap`), as windows in which I code are
+    generally wide enough, and the codelines are never that long.
   - In either case, I can dismiss the |popup| via <Esc><Esc>.
   - After <Esc><Esc>, I can show the |popup| again via <Space><Space>.
+  - In all cases, `hollow` allows me to not cover more of the text underneath
+    than I need.
 
 Note that this suffers the same issue noted at |SoftWrap-show-on-request|.
 
