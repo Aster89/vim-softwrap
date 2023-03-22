@@ -176,7 +176,8 @@ Default: <Esc><Esc>
 If you don't like the default, you can customize the style by defining the
 following in your |vimrc| _before_ any |colorscheme| command.
 >
-  autocmd ColorScheme * highlight SoftWrapHighlighGroup ctermbg=red
+  autocmd ColorScheme * highlight SoftWrapHighlightGroup
+    \ cterm=underline ctermbg=darkgrey
 <
 (Note that you can't customize |ctermfg|, as the |popup| uses the syntax
 highlighting of the current line.)
