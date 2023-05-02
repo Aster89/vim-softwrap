@@ -109,7 +109,7 @@ function! s:softwrapShow(...)
     let foldtext = foldtext . repeat(foldfilling, nlines*(available_screen - (&showbreak == '' ? 0 : 1)) - len(foldtext) + 1)
   endif
   let leftover_mask = []
-  if hollow_leftover
+  if hollow_leftover && nlines >= 2
     let leftover = (available_screen * nlines) - (len(getline('.')) + (&showbreak == '' ? 0 : (nlines - 1)))
     let leftover_mask = [[-leftover, -1, -1, -1]]
   endif
