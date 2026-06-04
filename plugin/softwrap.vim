@@ -129,10 +129,17 @@ function! s:softwrapShow(...)
     \   }
     \ )
   exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<CR>'
+  augroup SoftWrapDummy
+    autocmd!
+    exe 'autocmd WinScrolled <buffer> :call <SID>closePopup(' . popup . ')'
+  augroup END
 endfunction
 
 function! s:closePopup(popup)
   exe 'call popup_close(' . a:popup . ') | nunmap ' . g:softwrap_close_popup_mapping
+  augroup SoftWrapDummy
+    autocmd!
+  augroup END
 endfunction
 
 command! -nargs=* SoftWrapShow call s:softwrapShow(<f-args>)
