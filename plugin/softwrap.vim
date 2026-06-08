@@ -131,7 +131,7 @@ function! s:softwrapShow(...)
   exe 'nnoremap <silent> ' . g:softwrap_close_popup_mapping . ' :call <SID>closePopup(' . popup . ')<CR>'
   augroup SoftWrapDummy
     autocmd!
-    exe 'autocmd WinScrolled <buffer> :call <SID>closePopup(' . popup . ')'
+    exe 'autocmd TabLeave,WinScrolled  <buffer> :call <SID>closePopup(' . popup . ')'
   augroup END
 endfunction
 
